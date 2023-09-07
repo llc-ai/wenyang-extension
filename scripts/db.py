@@ -55,12 +55,21 @@ def test():
         connect = sqlite3.connect('wenyang.db')
         cc = connect.cursor()
         cc.execute(f"""
-            select * from wenyang
+            select * from wenyang where pic == '902704.tif'
         """)
         result = cc.fetchall()
         connect.close()
         return result
 
-r = test()
-print(r)
+def delete():
+        connect = sqlite3.connect('wenyang.db')
+        cc = connect.cursor()
+        cc.execute(f"""
+                    delete from wenyang where pic == '902703.tif'
+                """)
+        connect.commit()
+        connect.close()
 
+# r = test()
+# print(r)
+# delete()

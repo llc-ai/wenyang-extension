@@ -83,7 +83,7 @@ def save_image(images, period, content, race, isAI):
     for img in images:
         try:
             img_ = Image.open(img.name)
-            img_.save(f"{db.img_save_dir()}/{img.orig_name}")
+            img_.convert("RGB").save(f"{db.img_save_dir()}/{img.orig_name}")
             db.insertWenyang([(period, content, race, isAI, img.orig_name)])
         except Exception as e:
             print(e)
@@ -98,31 +98,43 @@ def save_image(images, period, content, race, isAI):
 
     return [gr.Dropdown.update(choices=period_new), gr.Dropdown.update(choices=content_new)]
 
+css = """
+#box_style {border-color: #FFCCCB} 
+"""
 
 with gr.Blocks() as tab5:
     with gr.Row():
-        with gr.Column(scale=1):
-            with gr.Row():
-                d1 = gr.Dropdown(choices=db.queryType('period'), label='朝代')
-                d2 = gr.Dropdown(choices=db.queryType('content'), label='图案类型')
-                d3 = gr.Dropdown(choices=[], label='民族')
-                d4 = gr.Dropdown(choices=['是', '否'], label='是否AI生成')
-            b1 = gr.Button('查询')
+        with gr.Column(scale=10):
+            with gr.Box():
+                gr.Markdown("""
+                    ###                  <center>查 询</center>
+                    """)
+                with gr.Row():
+                    d1 = gr.Dropdown(choices=db.queryType('period'), label='朝代')
+                    d2 = gr.Dropdown(choices=db.queryType('content'), label='图案类型')
+                    d3 = gr.Dropdown(choices=[], label='民族')
+                    d4 = gr.Dropdown(choices=['是', '否'], label='是否AI生成')
+                b1 = gr.Button('查询纹样')
 
-            gallery = gr.Gallery(label="符合查询条件的图片")
-            # b2 = gr.Button('下一页')
+                gallery = gr.Gallery(label="符合查询条件的图片")
+                # b2 = gr.Button('下一页')
 
-            b1.click(query, [d1, d2, d3, d4], gallery)
+                b1.click(query, [d1, d2, d3, d4], gallery)
+        with gr.Column(scale=1, min_width=5):
+            gr.HTML()
+        with gr.Column(scale=10):
+            with gr.Box(elem_id="box_style"):
+                gr.Markdown("""
+                                    ###                  <center>导 入</center>
+                                    """)
+                file_output = gr.File(file_count="multiple", type="file", label="原始图片")
+                t2 = gr.Textbox(label='朝代')
+                t3 = gr.Textbox(label='图案类型')
+                t4 = gr.Textbox(label='民族')
+                d11 = gr.Dropdown(label='是否AI生成', choices=['是', '否'])
+                b2 = gr.Button('确认保存')
 
-        with gr.Column(scale=1):
-            file_output = gr.File(file_count="multiple", type="file", label="原始图片")
-            t2 = gr.Textbox(label='朝代')
-            t3 = gr.Textbox(label='图案类型')
-            t4 = gr.Textbox(label='民族')
-            d11 = gr.Dropdown(label='是否AI生成', choices=['是', '否'])
-            b2 = gr.Button('确认保存')
-
-            b2.click(save_image, [file_output, t2, t3, t4, d11], [d1, d2])
+                b2.click(save_image, [file_output, t2, t3, t4, d11], [d1, d2])
 
 def save_config(config):
     1
@@ -133,17 +145,19 @@ with gr.Blocks() as tab6:
     b.click(save_config, t)
 
 tabss = [
-    (tab1, "纹样查看"),
+    # (tab1, "纹样查看"),
     (tab2, '训练和生成'),
-    (tab3, '纹样存储'),
-    (tab4, '导出XR'),
+    # (tab3, '纹样存储'),
     (tab5, '纹样数据库'),
+    (tab4, '导出XR'),
     (tab6, '系统设置')
 ]
 
 
 def ui_main():
-    gr.Markdown("纹样平台")
+    gr.Markdown("""
+    # 纹样平台
+    """)
     with gr.Tabs() as tabs:
         for tab, label in tabss:
             with gr.TabItem(label):
