@@ -3,6 +3,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--db", default="wenyang.db", help="directory to your db")
+parser.add_argument("--image", default="../data", help="directory to your image")
 parser.add_argument("--share", default=False, help="make link public (used in colab)")
 
 args = parser.parse_args()
@@ -29,14 +30,14 @@ c.execute(sql_table_type)
 conn.close()
 
 def insertWenyang(rows):
-        connect = sqlite3.connect('wenyang.db')
+        connect = sqlite3.connect(args.db)
         cc = connect.cursor()
         cc.executemany(sql_insert_wenyang, rows)
         connect.commit()
         connect.close()
 
 def query(period, content, race, isAI):
-        connect = sqlite3.connect('wenyang.db')
+        connect = sqlite3.connect(args.db)
         cc = connect.cursor()
         cc.execute(f"""
             select pic from wenyang where period = '{period}' and content = '{content}' and isAI = '{isAI}'
@@ -46,7 +47,7 @@ def query(period, content, race, isAI):
         return result
 
 def queryType(type):
-        connect = sqlite3.connect('wenyang.db')
+        connect = sqlite3.connect(args.db)
         cc = connect.cursor()
         cc.execute(f"""
                     select distinct({type}) from wenyang
@@ -56,10 +57,10 @@ def queryType(type):
 
         return [x[0] for x in result]
 def img_save_dir():
-        return "../data"
+        return args.image
 
 def test():
-        connect = sqlite3.connect('wenyang.db')
+        connect = sqlite3.connect(args.db)
         cc = connect.cursor()
         cc.execute(f"""
             select * from wenyang where pic == '902704.tif'
@@ -69,7 +70,7 @@ def test():
         return result
 
 def delete():
-        connect = sqlite3.connect('wenyang.db')
+        connect = sqlite3.connect(args.db)
         cc = connect.cursor()
         cc.execute(f"""
                     delete from wenyang where pic == '902703.tif'
