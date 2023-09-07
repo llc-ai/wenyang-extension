@@ -146,11 +146,11 @@ with gr.Blocks() as tab6:
 
 tabss = [
     # (tab1, "纹样查看"),
-    (tab2, '训练和生成'),
+    # (tab2, '训练和生成'),
     # (tab3, '纹样存储'),
     (tab5, '纹样数据库'),
-    (tab4, '导出XR'),
-    (tab6, '系统设置')
+    # (tab4, '导出XR'),
+    # (tab6, '系统设置')
 ]
 
 
@@ -166,4 +166,5 @@ def ui_main():
 with gr.Blocks(mode="LLC", title="llc") as demo:
     ui_main()
 
-demo.launch()
+
+demo.launch(share=db.args.share)

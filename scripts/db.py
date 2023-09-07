@@ -1,6 +1,13 @@
 import sqlite3
+import argparse
 
-conn = sqlite3.connect('wenyang.db')
+parser = argparse.ArgumentParser()
+parser.add_argument("--db", default="wenyang.db", help="directory to your db")
+parser.add_argument("--share", default=False, help="make link public (used in colab)")
+
+args = parser.parse_args()
+
+conn = sqlite3.connect(args.db)
 c = conn.cursor()
 
 sql_table_wenyang = """
