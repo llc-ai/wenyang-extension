@@ -156,7 +156,7 @@ tabss = [
 
 def ui_main():
     gr.Markdown("""
-    # 纹样平台
+    # 国家纹样课题 -- 纹样数据库
     """)
     with gr.Tabs() as tabs:
         for tab, label in tabss:
